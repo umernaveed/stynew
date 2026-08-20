@@ -38,8 +38,22 @@ class DashboardMainScreen extends GetView<DashboardTabBarController> {
                     children: [
                       const _DashboardTopBar(),
                       SizedBox(height: 2.8.h),
-                      const _AccountSummaryCard(),
-                      SizedBox(height: 2.4.h),
+                      Obx(
+                        () => AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 180),
+                          child: controller.isDashboardSelected
+                              ? const Column(
+                                  key: ValueKey('dashboard-account-card'),
+                                  children: [
+                                    _AccountSummaryCard(),
+                                    SizedBox(height: 24),
+                                  ],
+                                )
+                              : const SizedBox.shrink(
+                                  key: ValueKey('compact-dashboard-header'),
+                                ),
+                        ),
+                      ),
                       _DashboardPillTabs(controller: controller),
                     ],
                   ),
@@ -333,52 +347,47 @@ class _DashboardPillTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 70,
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(35),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFB8C5D8).withOpacity(0.24),
-            offset: const Offset(0, 10),
-            blurRadius: 25,
+    return Obx(
+      () => Row(
+        children: [
+          Expanded(
+            child: _PillTab(
+              title: 'Dashboard',
+              icon: Icons.grid_view_rounded,
+              selected: controller.isDashboardSelected,
+              selectedStyle: _SelectedTabStyle.gradient,
+              onTap: () => controller.tabController.animateTo(0),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: _PillTab(
+              title: 'Packages',
+              icon: Icons.inventory_2_outlined,
+              selected: controller.isPackagesSelected,
+              selectedStyle: _SelectedTabStyle.underline,
+              onTap: () => controller.tabController.animateTo(1),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: _PillTab(
+              title: 'Address',
+              icon: Icons.location_on_outlined,
+              selected: controller.isAddressSelected,
+              selectedStyle: _SelectedTabStyle.gradient,
+              onTap: () => controller.tabController.animateTo(2),
+            ),
           ),
         ],
       ),
-      child: Obx(
-        () => Row(
-          children: [
-            Expanded(
-              child: _PillTab(
-                title: 'Dashboard',
-                icon: Icons.grid_view_rounded,
-                selected: controller.isDashboardSelected,
-                onTap: () => controller.tabController.animateTo(0),
-              ),
-            ),
-            Expanded(
-              child: _PillTab(
-                title: 'Packages',
-                icon: Icons.inventory_2_outlined,
-                selected: controller.isPackagesSelected,
-                onTap: () => controller.tabController.animateTo(1),
-              ),
-            ),
-            Expanded(
-              child: _PillTab(
-                title: 'Address',
-                icon: Icons.location_on_outlined,
-                selected: controller.isAddressSelected,
-                onTap: () => controller.tabController.animateTo(2),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
+}
+
+enum _SelectedTabStyle {
+  gradient,
+  underline,
 }
 
 class _PillTab extends StatelessWidget {
@@ -386,55 +395,89 @@ class _PillTab extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.selected,
+    required this.selectedStyle,
     required this.onTap,
   });
 
   final String title;
   final IconData icon;
   final bool selected;
+  final _SelectedTabStyle selectedStyle;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final isUnderlineSelected =
+        selected && selectedStyle == _SelectedTabStyle.underline;
+    final foregroundColor = selected
+        ? (isUnderlineSelected ? const Color(0xFF0D62F0) : Colors.white)
+        : const Color(0xFF08102A);
+
     return InkWell(
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        height: double.infinity,
+        height: 70,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: selected
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFB8C5D8).withOpacity(0.24),
+              offset: const Offset(0, 10),
+              blurRadius: 25,
+            ),
+          ],
+          gradient: selected && selectedStyle == _SelectedTabStyle.gradient
               ? const LinearGradient(
                   colors: [
                     Color(0xFF0DB04A),
-                    Color(0xFF007E39),
+                    Color(0xFF0D62F0),
                   ],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 )
               : null,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Icon(
-              icon,
-              color: selected ? Colors.white : const Color(0xFF08102A),
-              size: 26,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: foregroundColor,
+                  size: 26,
+                ),
+                const SizedBox(width: 9),
+                Flexible(
+                  child: Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: foregroundColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 9),
-            Flexible(
-              child: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: selected ? Colors.white : const Color(0xFF08102A),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+            if (isUnderlineSelected)
+              Positioned(
+                bottom: 0,
+                left: 45,
+                right: 45,
+                child: Container(
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0D62F0),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
