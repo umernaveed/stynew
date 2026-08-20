@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:straight_to_yard/app/util/flush_snackbar.dart';
-import 'package:straight_to_yard/presentation/account/views/account_screen.dart';
+import 'package:straight_to_yard/data/models/dashboard_address_data/dashboard_address_data.dart';
 import 'package:straight_to_yard/presentation/dashboard/controllers/dashboard_address_controller.dart';
 import 'package:straight_to_yard/presentation/widgets/shimmer_widget.dart';
 
@@ -14,75 +14,48 @@ class Address extends GetView<DashboardAddressController> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: controller.refreshData,
+      color: const Color(0xFF0DB04A),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 2.5.h),
         child: controller.obx(
-          onLoading: const _Shimmerloading(),
-          onEmpty: const Center(
-            child: Text(
-              'No data found',
-              style: TextStyle(
-                color: Color(0xFF181725),
-                fontSize: 26,
-                fontWeight: FontWeight.w400,
+          onLoading: const _ShimmerLoading(),
+          onEmpty: SizedBox(
+            height: 36.h,
+            child: const Center(
+              child: Text(
+                'No data found',
+                style: TextStyle(
+                  color: Color(0xFF08102A),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
           onError: (error) => SizedBox(
-            height: context.height / 1.5,
+            height: 36.h,
             width: context.width,
             child: const Center(
               child: Text(
                 'Something went wrong try again late',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xFF181725),
-                  fontSize: 26,
-                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF08102A),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
           (state) {
             if (state == null) return const SizedBox.shrink();
-            return Padding(
-              padding: EdgeInsets.only(top: 4.h, bottom: 1.h),
-              child: Column(
-                children: [
-                  AddressItemWidget(
-                    mainAddress: 'Your Air Shipping Address',
-                    name: state.userInfo.userName,
-                    address1: state.setting.packageShippingAddress1,
-                    address2: state.userInfo.addressLine2,
-                    city: state.setting.city,
-                    country: state.setting.country,
-                    zipCode: state.setting.zip,
-                    state: state.setting.state,
-                  ),
-                  SizedBox(height: 2.h),
-                  AddressItemWidget(
-                    mainAddress: 'Your Sea Shipping Address',
-                    name: state.userInfo.userName,
-                    address1: state.setting.seaShippingAddress1,
-                    address2: state.setting.seaShippingAddress2,
-                    city: state.setting.seaCity,
-                    country: state.setting.seaCountry,
-                    zipCode: state.setting.seaZip,
-                    state: state.setting.seaState,
-                  ),
-                  SizedBox(height: 2.h),
-                  // AddressItemWidget(
-                  //   mainAddress: 'Your Air Express Shipping Address',
-                  //   name: state.userInfo.userName,
-                  //   address1: state.setting.expressShippingAddress1,
-                  //   address2: state.setting.expressShippingAddress2,
-                  //   city: state.setting.expressCity,
-                  //   country: state.setting.expressCountry,
-                  //   zipCode: state.setting.expressZip,
-                  //   state: state.setting.expressState,
-                  // ),
-                ],
-              ),
+            return Column(
+              children: [
+                AddressItemWidget.air(data: state),
+                SizedBox(height: 2.h),
+                AddressItemWidget.sea(data: state),
+              ],
             );
           },
         ),
@@ -91,382 +64,610 @@ class Address extends GetView<DashboardAddressController> {
   }
 }
 
-class _Shimmerloading extends StatelessWidget {
-  const _Shimmerloading();
+class AddressItemWidget extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final List<_AddressRowData> rows;
+  final Color accent;
+
+  const AddressItemWidget({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.rows,
+    required this.accent,
+  });
+
+  factory AddressItemWidget.air({required DashboardAddressData data}) {
+    final setting = data.setting;
+    final user = data.userInfo;
+    return AddressItemWidget(
+      title: 'Your Air Shipping Address',
+      subtitle: 'Use this address when shopping online',
+      accent: const Color(0xFF0D62F0),
+      rows: [
+        _AddressRowData(
+          label: 'NAME',
+          value: user.userName,
+          icon: Icons.person_outline_rounded,
+        ),
+        _AddressRowData(
+          label: 'ADDRESS LINE 1',
+          value: setting.packageShippingAddress1,
+          icon: Icons.home_outlined,
+        ),
+        _AddressRowData(
+          label: 'ADDRESS LINE 2',
+          value: user.addressLine2,
+          icon: Icons.apartment_rounded,
+        ),
+        _AddressRowData(
+          label: 'CITY',
+          value: setting.city,
+          icon: Icons.location_city_outlined,
+        ),
+        _AddressRowData(
+          label: 'STATE',
+          value: setting.state,
+          icon: Icons.place_outlined,
+        ),
+        _AddressRowData(
+          label: 'COUNTRY',
+          value: setting.country,
+          icon: Icons.flag_outlined,
+          flag: _flagForCountry(setting.country),
+        ),
+        _AddressRowData(
+          label: 'ZIP',
+          value: setting.zip,
+          icon: Icons.mail_outline_rounded,
+        ),
+      ],
+    );
+  }
+
+  factory AddressItemWidget.sea({required DashboardAddressData data}) {
+    final setting = data.setting;
+    final user = data.userInfo;
+    return AddressItemWidget(
+      title: 'Your Sea Shipping Address',
+      subtitle: 'Use this address for sea freight packages',
+      accent: const Color(0xFF078A20),
+      rows: [
+        _AddressRowData(
+          label: 'NAME',
+          value: user.userName,
+          icon: Icons.person_outline_rounded,
+        ),
+        _AddressRowData(
+          label: 'ADDRESS LINE 1',
+          value: setting.seaShippingAddress1,
+          icon: Icons.home_outlined,
+        ),
+        _AddressRowData(
+          label: 'ADDRESS LINE 2',
+          value: setting.seaShippingAddress2,
+          icon: Icons.apartment_rounded,
+        ),
+        _AddressRowData(
+          label: 'CITY',
+          value: setting.seaCity,
+          icon: Icons.location_city_outlined,
+        ),
+        _AddressRowData(
+          label: 'STATE',
+          value: setting.seaState,
+          icon: Icons.place_outlined,
+        ),
+        _AddressRowData(
+          label: 'COUNTRY',
+          value: setting.seaCountry,
+          icon: Icons.flag_outlined,
+          flag: _flagForCountry(setting.seaCountry),
+        ),
+        _AddressRowData(
+          label: 'ZIP',
+          value: setting.seaZip,
+          icon: Icons.mail_outline_rounded,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 4.h, bottom: 2.h),
+    final visibleRows =
+        rows.where((row) => row.value.trim().isNotEmpty).toList();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 19, 20, 18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFB8C5D8).withOpacity(0.23),
+            offset: const Offset(0, 10),
+            blurRadius: 26,
+          ),
+        ],
+      ),
       child: Column(
         children: [
-          const ShimmerAddressItemWidget(),
-          SizedBox(height: 5.h),
-          const ShimmerAddressItemWidget(),
+          _AddressHero(
+            title: title,
+            subtitle: subtitle,
+            accent: accent,
+          ),
+          const SizedBox(height: 19),
+          ...visibleRows.map(
+            (row) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _AddressRow(
+                data: row,
+                accent: accent,
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          _SecureHint(accent: accent),
         ],
       ),
     );
   }
 }
 
-class AddressItemWidget extends StatelessWidget {
-  final String mainAddress;
-  final String name;
-  final String address1;
-  final String address2;
-  final String city;
-  final String country;
-  final String zipCode;
-  final String state;
-  const AddressItemWidget({
-    super.key,
-    required this.mainAddress,
-    required this.name,
-    required this.address1,
-    required this.address2,
-    required this.city,
-    required this.country,
-    required this.zipCode,
-    required this.state,
+String _flagForCountry(String country) {
+  final normalized = country.trim().toLowerCase();
+  if (normalized.contains('united states') || normalized == 'usa') {
+    return '🇺🇸';
+  }
+  if (normalized.contains('jamaica')) {
+    return '🇯🇲';
+  }
+  return '🏳️';
+}
+
+class _AddressHero extends StatelessWidget {
+  const _AddressHero({
+    required this.title,
+    required this.subtitle,
+    required this.accent,
   });
+
+  final String title;
+  final String subtitle;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: context.width,
-      margin: EdgeInsets.symmetric(horizontal: 4.w),
-      padding: EdgeInsets.symmetric(horizontal: 3.4.w, vertical: 2.h),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x19000000),
-            blurRadius: 4,
-            offset: Offset(0, 3),
-            spreadRadius: 0,
-          )
-        ],
+      height: 14.h,
+      width: double.infinity,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7FAFF),
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
         children: [
-          SizedBox(height: 0.45.h),
-          Text(
-            mainAddress,
-            style: TextStyle(
-              color: const Color(0xFF4791CE),
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
+          Positioned(
+            right: -8,
+            top: -18,
+            bottom: -18,
+            child: Container(
+              width: 155,
+              decoration: BoxDecoration(
+                color: accent.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
             ),
           ),
-          SizedBox(height: 2.h),
-          _AddressItemKeyValueBuilder(
-            title: 'NAME:',
-            subTitle: name,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+          Positioned(
+            right: 26,
+            bottom: 16,
+            child: _ShippingIllustration(accent: accent),
           ),
-          SizedBox(height: 0.5.h),
-          _AddressItemKeyValueBuilder(
-            title: 'ADDRESS LINE 1:',
-            subTitle: address1,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          _AddressItemKeyValueBuilder(
-            title: 'ADDRESS LINE 2:',
-            subTitle: address2,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          _AddressItemKeyValueBuilder(
-            title: 'CITY:',
-            subTitle: city,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          Visibility(
-            visible: state.isNotEmpty,
-            child: _AddressItemKeyValueBuilder(
-              title: 'STATE:',
-              subTitle: state,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(22, 0, 120, 0),
+            child: Row(
+              children: [
+                Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        accent,
+                        const Color(0xFF0DB04A),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: accent.withOpacity(0.22),
+                        offset: const Offset(0, 8),
+                        blurRadius: 18,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.location_on_rounded,
+                    color: Colors.white,
+                    size: 45,
+                  ),
+                ),
+                const SizedBox(width: 23),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            const TextSpan(text: 'Your '),
+                            TextSpan(
+                              text: title.contains('Air')
+                                  ? 'Air Shipping'
+                                  : 'Sea Shipping',
+                              style: TextStyle(color: accent),
+                            ),
+                            const TextSpan(text: ' Address'),
+                          ],
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF08102A),
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          height: 1.12,
+                        ),
+                      ),
+                      const SizedBox(height: 9),
+                      Text(
+                        subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF566078),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          Visibility(
-            visible: state.isNotEmpty,
-            child: SizedBox(height: 0.5.h),
-          ),
-          _AddressItemKeyValueBuilder(
-            title: 'COUNTRY:',
-            subTitle: country,
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-          SizedBox(height: 0.5.h),
-          _AddressItemKeyValueBuilder(
-            title: 'ZIP:',
-            subTitle: zipCode,
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-          SizedBox(height: 1.h),
-          // const AppDivider(),
-          // SizedBox(height: 1.5.h),
-          // Align(
-          //   alignment: Alignment.topLeft,
-          //   child: Padding(
-          //     padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
-          //     child: Text(
-          //       '*please to ensure your mailbox number is added to address when shipping either beside last or in line 2 of address to prevent delays.',
-          //       textAlign: TextAlign.left,
-          //       style: TextStyle(
-          //         color: const Color(0xFF7C7C7C),
-          //         fontSize: 11.sp,
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );
   }
 }
 
-class _AddressItemKeyValueBuilder extends GetView<DashboardAddressController> {
-  final String title;
-  final String subTitle;
-  final CrossAxisAlignment crossAxisAlignment;
-  final MainAxisAlignment mainAxisAlignment;
-  final double spaceBTW;
-  final MainAxisSize mainAxisSize;
-  const _AddressItemKeyValueBuilder({
-    required this.title,
-    required this.subTitle,
-    this.crossAxisAlignment = CrossAxisAlignment.start,
-    this.mainAxisAlignment = MainAxisAlignment.center,
-    this.spaceBTW = 0,
-    this.mainAxisSize = MainAxisSize.min,
-  });
+class _ShippingIllustration extends StatelessWidget {
+  const _ShippingIllustration({required this.accent});
+
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return controller.obx(
-      onLoading: const _AddressItemKeyValueBuilderShimmer(),
-      (state) {
-        return Container(
-          width: context.width,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(5),
+    return SizedBox(
+      width: 125,
+      height: 90,
+      child: Stack(
+        children: [
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Transform.rotate(
+              angle: -0.22,
+              child: Icon(
+                Icons.flight_rounded,
+                color: accent.withOpacity(0.85),
+                size: 62,
+              ),
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: crossAxisAlignment,
-                mainAxisAlignment: mainAxisAlignment,
-                mainAxisSize: mainAxisSize,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 2,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 10.5.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(width: spaceBTW),
-                  Text(
-                    subTitle,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: TextStyle(
-                      color: const Color(0xFF7C7C7C),
-                      fontSize: 10.5.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+          Positioned(
+            right: 4,
+            bottom: 0,
+            child: Icon(
+              Icons.inventory_2_rounded,
+              color: const Color(0xFFD79A52).withOpacity(0.92),
+              size: 66,
+            ),
+          ),
+          Positioned(
+            left: 12,
+            bottom: 16,
+            child: Container(
+              width: 34,
+              height: 24,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 8,
                   ),
                 ],
               ),
-              _CopyButton(
-                () async {
-                  final t = ClipboardData(text: subTitle);
-                  await Clipboard.setData(t).then((e) {
-                    FlushSnackbar.showSnackBar('Copied to Clipboard');
-                  });
-                },
+              child: const Icon(
+                Icons.flag_rounded,
+                color: Color(0xFF0D62F0),
+                size: 22,
               ),
-            ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
+    );
+  }
+}
+
+class _AddressRowData {
+  const _AddressRowData({
+    required this.label,
+    required this.value,
+    required this.icon,
+    this.flag,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+  final String? flag;
+}
+
+class _AddressRow extends StatelessWidget {
+  const _AddressRow({
+    required this.data,
+    required this.accent,
+  });
+
+  final _AddressRowData data;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      minHeight: 76,
+      padding: const EdgeInsets.fromLTRB(16, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE1E7F0),
+        ),
+      ),
+      child: Row(
+        children: [
+          _RowIcon(
+            icon: data.icon,
+            accent: accent,
+            flag: data.flag,
+          ),
+          const SizedBox(width: 25),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  data.label,
+                  style: TextStyle(
+                    color: accent,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  data.value,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF08102A),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          _CopyButton(
+            accent: accent,
+            value: data.value,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RowIcon extends StatelessWidget {
+  const _RowIcon({
+    required this.icon,
+    required this.accent,
+    this.flag,
+  });
+
+  final IconData icon;
+  final Color accent;
+  final String? flag;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F7F1),
+        borderRadius: BorderRadius.circular(13),
+      ),
+      alignment: Alignment.center,
+      child: flag != null
+          ? Text(
+              flag!,
+              style: TextStyle(fontSize: 35),
+            )
+          : Icon(
+              icon,
+              color: accent,
+              size: 35,
+            ),
     );
   }
 }
 
 class _CopyButton extends StatelessWidget {
-  const _CopyButton(this.onTap);
-  final VoidCallback onTap;
+  const _CopyButton({
+    required this.accent,
+    required this.value,
+  });
+
+  final Color accent;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 4.h,
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.14),
-        shape: BoxShape.circle,
-      ),
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        onPressed: onTap,
-        icon: Icon(
-          Icons.copy,
-          size: 1.8.h,
+    return Material(
+      color: const Color(0xFFF5F6F8),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () async {
+          await Clipboard.setData(ClipboardData(text: value));
+          FlushSnackbar.showSnackBar('Copied to Clipboard');
+        },
+        child: SizedBox(
+          width: 54,
+          height: 54,
+          child: Icon(
+            Icons.copy_rounded,
+            color: accent,
+            size: 29,
+          ),
         ),
       ),
     );
   }
 }
 
-class _AddressItemKeyValueBuilderShimmer extends StatelessWidget {
-  const _AddressItemKeyValueBuilderShimmer({
-    super.key,
-  });
+class _SecureHint extends StatelessWidget {
+  const _SecureHint({required this.accent});
+
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7FBF6),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: accent,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Text(
+              'Copy this address and use at checkout.',
+              style: TextStyle(
+                color: Color(0xFF566078),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShimmerLoading extends StatelessWidget {
+  const _ShimmerLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
       children: [
-        ShimmerWidget(
-          radius: BorderRadius.circular(2),
-          width: 16.w,
-          height: 3.h,
-          child: SizedBox(
-            width: 6.w,
-            height: 3.h,
-          ),
-        ),
-        SizedBox(width: 5.w),
-        ShimmerWidget(
-          radius: BorderRadius.circular(2),
-          width: context.width / 1.7,
-          height: 3.h,
-          child: SizedBox(
-            width: context.width / 1.7,
-            height: 3.h,
-          ),
-        ),
+        const ShimmerAddressItemWidget(),
+        SizedBox(height: 2.h),
+        const ShimmerAddressItemWidget(),
       ],
     );
   }
 }
 
 class ShimmerAddressItemWidget extends StatelessWidget {
-  const ShimmerAddressItemWidget({
-    super.key,
-  });
+  const ShimmerAddressItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4.w),
-      padding: EdgeInsets.symmetric(horizontal: 3.4.w, vertical: 2.h),
-      decoration: const BoxDecoration(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 19, 20, 18),
+      decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Color(0x19000000),
-            blurRadius: 4,
-            offset: Offset(0, 3),
-            spreadRadius: 0,
-          )
+            color: const Color(0xFFB8C5D8).withOpacity(0.23),
+            offset: const Offset(0, 10),
+            blurRadius: 26,
+          ),
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 0.45.h),
           ShimmerWidget(
-            height: 5.h,
-            radius: BorderRadius.circular(4),
-            width: context.width,
-            child: SizedBox(height: 1.5.h),
-          ),
-          SizedBox(height: 2.h),
-          const _AddressItemKeyValueBuilder(
-            title: '_:',
-            subTitle: '_',
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          const _AddressItemKeyValueBuilder(
-            title: '_',
-            subTitle: '_',
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          const _AddressItemKeyValueBuilder(
-            title: '_',
-            subTitle: '_',
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          const _AddressItemKeyValueBuilder(
-            title: '_:',
-            subTitle: '_',
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-          ),
-          SizedBox(height: 0.5.h),
-          const _AddressItemKeyValueBuilder(
-            title: '_:',
-            subTitle: ' _',
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-          SizedBox(height: 0.5.h),
-          const _AddressItemKeyValueBuilder(
-            title: '_:',
-            subTitle: '',
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-          SizedBox(height: 3.h),
-          const AppDivider(),
-          SizedBox(height: 1.5.h),
-          const ParagraphShimmer(),
-        ],
-      ),
-    );
-  }
-}
-
-class ParagraphShimmer extends StatelessWidget {
-  const ParagraphShimmer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(3, (index) {
-        return Padding(
-          padding: EdgeInsets.only(top: 0.5.h),
-          child: ShimmerWidget(
-            radius: BorderRadius.circular(3),
-            height: 3.h,
-            width: context.width,
+            height: 14.h,
+            radius: BorderRadius.circular(20),
+            width: double.infinity,
             child: const SizedBox.shrink(),
           ),
-        );
-      }),
+          const SizedBox(height: 19),
+          ...List.generate(
+            7,
+            (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: ShimmerWidget(
+                radius: BorderRadius.circular(16),
+                width: double.infinity,
+                height: 76,
+                child: const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
