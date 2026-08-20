@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:straight_to_yard/app/core/routes/app_pages.dart';
 import 'package:straight_to_yard/presentation/auth/controllers/signup_controller.dart';
+import 'package:straight_to_yard/presentation/auth/widgets/auth_app_bar.dart';
 import 'package:straight_to_yard/presentation/auth/widgets/drop_down.dart';
 import 'package:straight_to_yard/presentation/base_screen.dart';
 
@@ -83,9 +83,9 @@ class _RegisterHeader extends StatelessWidget {
         ),
         Column(
           children: [
-            SvgPicture.asset(
-              'assets/svgs/app_logo_straight_to_yard.svg',
+            DynamicAppLogo(
               width: 44.w,
+              height: 13.h,
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 33),

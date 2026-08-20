@@ -41,8 +41,6 @@ class AuthCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onBoardingController = Get.find<OnBoardingController>();
-
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -78,62 +76,81 @@ class AuthCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             SizedBox(width: 8.1.w),
             Visibility(
               visible: appLogoVisble,
-              child: Obx(
-                () {
-                  final appLogo =
-                      onBoardingController.meta.value.setting?.appLogo ?? '';
-                  final isEmpty = appLogo.isEmpty;
-                  final isSVG = appLogo.isSvgOrPngUrl();
-                  return Container(
-                    margin: _type.isSmall
-                        ? EdgeInsets.zero
-                        : EdgeInsets.only(top: 2.3.h),
-                    child: isEmpty
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                                right: _type.isSmall ? 0 : 10.w),
-                            child: Image.asset(
-                              'assets/images/icon.png',
-                              fit: BoxFit.fill,
-                              width: _type.isSmall ? 20.2 : 49.w,
-                              height: _type.isSmall ? 7.h : 14.h,
-                            ),
-                          )
-                        : isSVG
-                            ? SvgPicture.network(
-                                appLogo,
-                                fit: BoxFit.fill,
-                                width: _type.isSmall ? 20.2 : 49.w,
-                                height: _type.isSmall ? 7.h : 14.h,
-                                placeholderBuilder: (context) {
-                                  return Container(
-                                    color: Colors.white,
-                                    child: const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-                                },
-                              )
-                            : Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right: _type.isSmall ? 0 : 10.w),
-                                  child: CachedImage(
-                                    imageUrl: appLogo,
-                                    height: _type.isSmall ? 7.h : 14.h,
-                                    width: _type.isSmall ? 100 : 49.w,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                  );
-                },
+              child: Container(
+                margin: _type.isSmall
+                    ? EdgeInsets.zero
+                    : EdgeInsets.only(top: 2.3.h),
+                child: Padding(
+                  padding: EdgeInsets.only(right: _type.isSmall ? 0 : 10.w),
+                  child: DynamicAppLogo(
+                    width: _type.isSmall ? 20.2 : 49.w,
+                    height: _type.isSmall ? 7.h : 14.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
             const Spacer(flex: 2),
           ],
         ),
       ),
+    );
+  }
+}
+
+class DynamicAppLogo extends StatelessWidget {
+  const DynamicAppLogo({
+    super.key,
+    required this.width,
+    required this.height,
+    this.fit = BoxFit.contain,
+  });
+
+  final double width;
+  final double height;
+  final BoxFit fit;
+
+  @override
+  Widget build(BuildContext context) {
+    final onBoardingController = Get.find<OnBoardingController>();
+
+    return Obx(
+      () {
+        final appLogo = onBoardingController.meta.value.setting?.appLogo ?? '';
+        if (appLogo.isEmpty) {
+          return Image.asset(
+            'assets/images/icon.png',
+            fit: fit,
+            width: width,
+            height: height,
+          );
+        }
+
+        if (appLogo.isSvgOrPngUrl()) {
+          return SvgPicture.network(
+            appLogo,
+            fit: fit,
+            width: width,
+            height: height,
+            placeholderBuilder: (context) {
+              return SizedBox(
+                width: width,
+                height: height,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          );
+        }
+
+        return CachedImage(
+          imageUrl: appLogo,
+          height: height,
+          width: width,
+          fit: fit,
+        );
+      },
     );
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:straight_to_yard/app/core/routes/app_pages.dart';
 import 'package:straight_to_yard/app/util/flush_snackbar.dart';
 import 'package:straight_to_yard/presentation/auth/controllers/login_controller.dart';
+import 'package:straight_to_yard/presentation/auth/widgets/auth_app_bar.dart';
 import 'package:straight_to_yard/presentation/base_screen.dart';
 
 class LoginScreen extends GetView<LoginController> {
@@ -43,9 +43,9 @@ class LoginScreen extends GetView<LoginController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(height: 6.5.h),
-                        SvgPicture.asset(
-                          'assets/svgs/app_logo_straight_to_yard.svg',
+                        DynamicAppLogo(
                           width: 58.w,
+                          height: 15.h,
                           fit: BoxFit.contain,
                         ),
                         SizedBox(height: 5.6.h),
