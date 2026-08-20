@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "275806864754",
+    "project_id": "straight-to-yards",
+    "storage_bucket": "straight-to-yards.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275806864754:android:30014b77dac95b4c6789eb",
+        "android_client_info": {
+          "package_name": "com.straighttoyard.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMURfb25b6ajDyK54K6YVrf9Si8AYxtpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
