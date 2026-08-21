@@ -17,7 +17,7 @@ class BottomNavScreen extends GetView<BottomNavController> {
       extendBody: true,
       wrapWithAnnotatedRegion: true,
       body: Container(
-        margin: const EdgeInsets.only(bottom: 122),
+        margin: const EdgeInsets.only(bottom: 132),
         child: Navigator(
           key: Get.nestedKey(controller.bottomNavNestedID),
           onGenerateRoute: (settings) {
@@ -46,7 +46,7 @@ class BottomNavScreen extends GetView<BottomNavController> {
         child: Padding(
           padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 1.2.h),
           child: Container(
-            height: 86,
+            height: 94,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.white,

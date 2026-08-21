@@ -176,37 +176,52 @@ class _MetricCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        value,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: color,
-                          fontSize: value.length > 8 ? 29 : 39,
-                          fontWeight: FontWeight.w800,
-                          height: 1,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            value,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: color,
+                              fontSize: value.length > 8 ? 29 : 39,
+                              fontWeight: FontWeight.w800,
+                              height: 1,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 17),
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF29344E),
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            label,
+                            maxLines: 1,
+                            style: const TextStyle(
+                              color: Color(0xFF29344E),
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        highlight,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: color,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            highlight,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                         ),
                       ),
                     ],
