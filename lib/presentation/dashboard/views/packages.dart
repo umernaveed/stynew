@@ -532,6 +532,49 @@ class _InvoiceButton extends StatelessWidget {
   }
 }
 
+class DescriptionWidget extends StatelessWidget {
+  const DescriptionWidget({
+    super.key,
+    required this.description,
+    this.title = 'Description',
+    this.descStyle,
+  });
+
+  final String description;
+  final String title;
+  final TextStyle? descStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$title:',
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 9.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          description,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: descStyle ??
+              TextStyle(
+                color: Colors.black,
+                fontSize: 9.sp,
+                fontWeight: FontWeight.w400,
+              ),
+        ),
+      ],
+    );
+  }
+}
+
 class _DashedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
