@@ -65,30 +65,40 @@ class BottomNavScreen extends GetView<BottomNavController> {
                   _NavItem(
                     label: 'Dashboard',
                     icon: Icons.home_rounded,
+                    selectedColor: const Color(0xFF078A20),
+                    selectedStyle: _NavSelectedStyle.filled,
                     selected: controller.currentIndex.value == 0,
                     onTap: () => controller.onTabChange(0),
                   ),
                   _NavItem(
                     label: 'Authorize User',
                     icon: Icons.person_outline_rounded,
+                    selectedColor: const Color(0xFF0D62F0),
+                    selectedStyle: _NavSelectedStyle.underline,
                     selected: controller.currentIndex.value == 1,
                     onTap: () => controller.onTabChange(1),
                   ),
                   _NavItem(
                     label: 'Delivery',
                     icon: Icons.location_on_outlined,
+                    selectedColor: const Color(0xFF0D62F0),
+                    selectedStyle: _NavSelectedStyle.soft,
                     selected: controller.currentIndex.value == 2,
                     onTap: () => controller.onTabChange(2),
                   ),
                   _NavItem(
                     label: 'News',
                     icon: Icons.newspaper_rounded,
+                    selectedColor: const Color(0xFF0D62F0),
+                    selectedStyle: _NavSelectedStyle.underline,
                     selected: controller.currentIndex.value == 3,
                     onTap: () => controller.onTabChange(3),
                   ),
                   _NavItem(
                     label: 'Account',
                     icon: Icons.person_outline_rounded,
+                    selectedColor: const Color(0xFF0D62F0),
+                    selectedStyle: _NavSelectedStyle.underline,
                     selected: controller.currentIndex.value == 4,
                     onTap: () => controller.onTabChange(4),
                   ),
@@ -102,64 +112,95 @@ class BottomNavScreen extends GetView<BottomNavController> {
   }
 }
 
+enum _NavSelectedStyle {
+  filled,
+  soft,
+  underline,
+}
+
 class _NavItem extends StatelessWidget {
   const _NavItem({
     required this.label,
     required this.icon,
+    required this.selectedColor,
+    required this.selectedStyle,
     required this.selected,
     required this.onTap,
   });
 
   final String label;
   final IconData icon;
+  final Color selectedColor;
+  final _NavSelectedStyle selectedStyle;
   final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final filled = selected && selectedStyle == _NavSelectedStyle.filled;
+    final soft = selected && selectedStyle == _NavSelectedStyle.soft;
+    final underline = selected && selectedStyle == _NavSelectedStyle.underline;
+    final color = selected ? selectedColor : const Color(0xFF08102A);
+
     return Expanded(
       child: InkWell(
         borderRadius: BorderRadius.circular(17),
         onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              width: selected ? 54 : 44,
-              height: selected ? 54 : 44,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: selected
-                    ? const LinearGradient(
-                        colors: [
-                          Color(0xFF0DB04A),
-                          Color(0xFF007E39),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
-                    : null,
-              ),
-              child: Icon(
-                icon,
-                color: selected ? Colors.white : const Color(0xFF08102A),
-                size: selected ? 31 : 28,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: filled || soft ? 54 : 44,
+                  height: filled || soft ? 54 : 44,
+                  decoration: BoxDecoration(
+                    color: soft ? const Color(0xFFEFF4FF) : null,
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: filled
+                        ? const LinearGradient(
+                            colors: [
+                              Color(0xFF0DB04A),
+                              Color(0xFF007E39),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : null,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: filled ? Colors.white : color,
+                    size: selected ? 31 : 28,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 11,
+                    fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: selected
-                    ? const Color(0xFF078A20)
-                    : const Color(0xFF08102A),
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+            if (underline)
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: 28,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: selectedColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
