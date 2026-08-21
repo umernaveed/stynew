@@ -37,7 +37,7 @@ class DashboardMainScreen extends GetView<DashboardTabBarController> {
                   child: Column(
                     children: [
                       const _DashboardTopBar(),
-                      SizedBox(height: 2.8.h),
+                      SizedBox(height: 2.2.h),
                       Obx(
                         () => AnimatedSwitcher(
                           duration: const Duration(milliseconds: 180),
@@ -187,103 +187,88 @@ class _AccountSummaryCard extends StatelessWidget {
   }
 
   Widget _buildCard(User user) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(22, 21, 20, 21),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFB8C5D8).withOpacity(0.25),
-            offset: const Offset(0, 12),
-            blurRadius: 28,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          _Avatar(user: user),
-          const SizedBox(width: 19),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hello, ${_firstName(user)}',
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF08102A),
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 390;
+        final identity = Row(
+          children: [
+            _Avatar(user: user),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello, ${_firstName(user)}',
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color(0xFF08102A),
+                      fontSize: 21,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Account ID: ${user.mailbox.isEmpty ? '-' : user.mailbox}',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF34405B),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Account ID: ${user.mailbox.isEmpty ? '-' : user.mailbox}',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Color(0xFF34405B),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 7),
-                    const Icon(
-                      Icons.copy_rounded,
-                      color: Color(0xFF34405B),
-                      size: 21,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 12,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFBF1),
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: const Color(0xFFFFE3A9),
+                      const SizedBox(width: 6),
+                      const Icon(
+                        Icons.copy_rounded,
+                        color: Color(0xFF34405B),
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.star_rounded,
-                  color: Color(0xFFF5A400),
-                  size: 22,
-                ),
-                SizedBox(width: 8),
-                Text(
-                  'Gold Member',
-                  style: TextStyle(
-                    color: Color(0xFFF5A400),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(width: 5),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: Color(0xFFF5A400),
-                  size: 24,
-                ),
-              ],
-            ),
+          ],
+        );
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(20, 19, 18, 19),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFB8C5D8).withOpacity(0.25),
+                offset: const Offset(0, 12),
+                blurRadius: 28,
+              ),
+            ],
           ),
-        ],
-      ),
+          child: compact
+              ? Column(
+                  children: [
+                    identity,
+                    const SizedBox(height: 14),
+                    const Align(
+                      alignment: Alignment.centerRight,
+                      child: _GoldMemberChip(),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(child: identity),
+                    const SizedBox(width: 12),
+                    const _GoldMemberChip(),
+                  ],
+                ),
+        );
+      },
     );
   }
 
@@ -291,6 +276,52 @@ class _AccountSummaryCard extends StatelessWidget {
     if (user.firstName.trim().isNotEmpty) return user.firstName.trim();
     if (user.completeName.trim().isNotEmpty) return user.completeName.trim();
     return 'User';
+  }
+}
+
+class _GoldMemberChip extends StatelessWidget {
+  const _GoldMemberChip();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 13,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFBF1),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: const Color(0xFFFFE3A9),
+        ),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.star_rounded,
+            color: Color(0xFFF5A400),
+            size: 21,
+          ),
+          SizedBox(width: 7),
+          Text(
+            'Gold Member',
+            style: TextStyle(
+              color: Color(0xFFF5A400),
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(width: 4),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: Color(0xFFF5A400),
+            size: 22,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -303,8 +334,8 @@ class _Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final initials = _initials(user);
     return Container(
-      width: 78,
-      height: 78,
+      width: 72,
+      height: 72,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
@@ -321,7 +352,7 @@ class _Avatar extends StatelessWidget {
         initials,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 27,
+          fontSize: 25,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -359,7 +390,7 @@ class _DashboardPillTabs extends StatelessWidget {
               onTap: () => controller.tabController.animateTo(0),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 10),
           Expanded(
             child: _PillTab(
               title: 'Packages',
@@ -369,7 +400,7 @@ class _DashboardPillTabs extends StatelessWidget {
               onTap: () => controller.tabController.animateTo(1),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 10),
           Expanded(
             child: _PillTab(
               title: 'Address',
@@ -449,17 +480,17 @@ class _PillTab extends StatelessWidget {
                 Icon(
                   icon,
                   color: foregroundColor,
-                  size: 26,
+                  size: 24,
                 ),
-                const SizedBox(width: 9),
+                const SizedBox(width: 7),
                 Flexible(
                   child: Text(
                     title,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: foregroundColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),

@@ -83,7 +83,7 @@ class AuthCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Padding(
                   padding: EdgeInsets.only(right: _type.isSmall ? 0 : 10.w),
                   child: DynamicAppLogo(
-                    width: _type.isSmall ? 20.2 : 49.w,
+                    width: _type.isSmall ? 32.w : 49.w,
                     height: _type.isSmall ? 7.h : 14.h,
                     fit: BoxFit.contain,
                   ),

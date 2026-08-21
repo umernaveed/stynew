@@ -163,14 +163,14 @@ class _MetricCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(31, 27, 24, 25),
+            padding: const EdgeInsets.fromLTRB(26, 24, 20, 24),
             child: Row(
               children: [
                 _IconPanel(
                   color: color,
                   icon: icon,
                 ),
-                const SizedBox(width: 31),
+                const SizedBox(width: 22),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +212,7 @@ class _MetricCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 21.w),
+                const SizedBox(width: 0),
               ],
             ),
           ),
@@ -234,8 +234,8 @@ class _IconPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 94,
-      height: 94,
+      width: 84,
+      height: 84,
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(19),
@@ -243,7 +243,7 @@ class _IconPanel extends StatelessWidget {
       child: Icon(
         icon,
         color: color,
-        size: 60,
+        size: 52,
       ),
     );
   }

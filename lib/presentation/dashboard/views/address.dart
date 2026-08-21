@@ -180,7 +180,7 @@ class AddressItemWidget extends StatelessWidget {
         rows.where((row) => row.value.trim().isNotEmpty).toList();
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 19, 20, 18),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -242,7 +242,7 @@ class _AddressHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 14.h,
+      height: 126,
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -264,17 +264,17 @@ class _AddressHero extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 26,
+            right: 14,
             bottom: 16,
             child: _ShippingIllustration(accent: accent),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(22, 0, 120, 0),
+            padding: const EdgeInsets.fromLTRB(18, 0, 86, 0),
             child: Row(
               children: [
                 Container(
-                  width: 76,
-                  height: 76,
+                  width: 68,
+                  height: 68,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -296,10 +296,10 @@ class _AddressHero extends StatelessWidget {
                   child: const Icon(
                     Icons.location_on_rounded,
                     color: Colors.white,
-                    size: 45,
+                    size: 40,
                   ),
                 ),
-                const SizedBox(width: 23),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +322,7 @@ class _AddressHero extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Color(0xFF08102A),
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.w800,
                           height: 1.12,
                         ),
@@ -334,7 +334,7 @@ class _AddressHero extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Color(0xFF566078),
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w400,
                           height: 1.2,
                         ),
@@ -359,7 +359,7 @@ class _ShippingIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 125,
+      width: 96,
       height: 90,
       child: Stack(
         children: [
@@ -371,7 +371,7 @@ class _ShippingIllustration extends StatelessWidget {
               child: Icon(
                 Icons.flight_rounded,
                 color: accent.withOpacity(0.85),
-                size: 62,
+                size: 52,
               ),
             ),
           ),
@@ -381,15 +381,15 @@ class _ShippingIllustration extends StatelessWidget {
             child: Icon(
               Icons.inventory_2_rounded,
               color: const Color(0xFFD79A52).withOpacity(0.92),
-              size: 66,
+              size: 54,
             ),
           ),
           Positioned(
             left: 12,
             bottom: 16,
             child: Container(
-              width: 34,
-              height: 24,
+              width: 30,
+              height: 22,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(4),
@@ -403,7 +403,7 @@ class _ShippingIllustration extends StatelessWidget {
               child: const Icon(
                 Icons.flag_rounded,
                 color: Color(0xFF0D62F0),
-                size: 22,
+                  size: 19,
               ),
             ),
           ),
@@ -440,7 +440,7 @@ class _AddressRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(minHeight: 76),
-      padding: const EdgeInsets.fromLTRB(16, 12, 14, 12),
+      padding: const EdgeInsets.fromLTRB(14, 11, 12, 11),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -455,7 +455,7 @@ class _AddressRow extends StatelessWidget {
             accent: accent,
             flag: data.flag,
           ),
-          const SizedBox(width: 25),
+          const SizedBox(width: 18),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,7 +465,7 @@ class _AddressRow extends StatelessWidget {
                   data.label,
                   style: TextStyle(
                     color: accent,
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
                     height: 1.15,
                   ),
@@ -477,7 +477,7 @@ class _AddressRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFF08102A),
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: FontWeight.w800,
                     height: 1.2,
                   ),
@@ -485,7 +485,7 @@ class _AddressRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 9),
           _CopyButton(
             accent: accent,
             value: data.value,
@@ -510,8 +510,8 @@ class _RowIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 60,
-      height: 60,
+      width: 54,
+      height: 54,
       decoration: BoxDecoration(
         color: const Color(0xFFF0F7F1),
         borderRadius: BorderRadius.circular(13),
@@ -520,12 +520,12 @@ class _RowIcon extends StatelessWidget {
       child: flag != null
           ? Text(
               flag!,
-              style: TextStyle(fontSize: 35),
+              style: TextStyle(fontSize: 30),
             )
           : Icon(
               icon,
               color: accent,
-              size: 35,
+              size: 31,
             ),
     );
   }
@@ -552,12 +552,12 @@ class _CopyButton extends StatelessWidget {
           FlushSnackbar.showSnackBar('Copied to Clipboard');
         },
         child: SizedBox(
-          width: 54,
-          height: 54,
+          width: 48,
+          height: 48,
           child: Icon(
             Icons.copy_rounded,
             color: accent,
-            size: 29,
+            size: 26,
           ),
         ),
       ),

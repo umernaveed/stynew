@@ -10,7 +10,6 @@ import 'package:straight_to_yard/presentation/account/controllers/account_contro
 import 'package:straight_to_yard/presentation/auth/widgets/auth_app_bar.dart';
 import 'package:straight_to_yard/presentation/base_screen.dart';
 import 'package:straight_to_yard/presentation/bottom_nav/controllers/bottom_nav_controller.dart';
-import 'package:straight_to_yard/presentation/widgets/cache_image.dart';
 import 'package:straight_to_yard/presentation/widgets/dialogs/account_delete_dialog.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -31,7 +30,7 @@ class AccountScreen extends StatelessWidget {
             physics: const ClampingScrollPhysics(),
             slivers: [
               SliverPadding(
-                padding: EdgeInsets.fromLTRB(4.w, 2.h, 4.w, 4.h),
+                padding: EdgeInsets.fromLTRB(4.w, 1.4.h, 4.w, 4.h),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
                     [
@@ -193,7 +192,7 @@ class UserProfileWidget extends StatelessWidget {
         final user = controller.user.value;
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(28, 28, 24, 28),
+          padding: const EdgeInsets.fromLTRB(24, 24, 22, 24),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(22),
@@ -216,7 +215,7 @@ class UserProfileWidget extends StatelessWidget {
               Row(
                 children: [
                   _ProfileAvatar(user: user),
-                  const SizedBox(width: 24),
+                  const SizedBox(width: 20),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,12 +229,12 @@ class UserProfileWidget extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: Color(0xFF08102A),
-                                  fontSize: 31,
+                                  fontSize: 26,
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 6),
                             InkWell(
                               borderRadius: BorderRadius.circular(16),
                               onTap: () => Get.toNamed(AppPages.updateProfile),
@@ -244,7 +243,7 @@ class UserProfileWidget extends StatelessWidget {
                                 child: Icon(
                                   Icons.edit_outlined,
                                   color: Color(0xFF0DB04A),
-                                  size: 25,
+                                  size: 23,
                                 ),
                               ),
                             ),
@@ -257,7 +256,7 @@ class UserProfileWidget extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Color(0xFF565D6E),
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -291,43 +290,36 @@ class _ProfileAvatar extends StatelessWidget {
     final name = UserProfileWidget._displayName(user);
     final initial = name.isEmpty ? 'U' : name.substring(0, 1);
     return Container(
-      width: 112,
-      height: 112,
+      width: 96,
+      height: 96,
       padding: const EdgeInsets.all(4),
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
       ),
-      child: user.image.isNotEmpty
-          ? CachedImage(
-              imageUrl: user.image,
-              width: 104,
-              height: 104,
-              circular: true,
-            )
-          : DecoratedBox(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFFFF633F),
-                    Color(0xFFFF1717),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  initial.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 52,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFFF633F),
+              Color(0xFFFF1717),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            initial.toUpperCase(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 46,
+              fontWeight: FontWeight.w800,
             ),
+          ),
+        ),
+      ),
     );
   }
 }

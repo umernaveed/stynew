@@ -17,7 +17,7 @@ class BottomNavScreen extends GetView<BottomNavController> {
       extendBody: true,
       wrapWithAnnotatedRegion: true,
       body: Container(
-        margin: EdgeInsets.only(bottom: 11.5.h),
+        margin: const EdgeInsets.only(bottom: 118),
         child: Navigator(
           key: Get.nestedKey(controller.bottomNavNestedID),
           onGenerateRoute: (settings) {
@@ -46,8 +46,8 @@ class BottomNavScreen extends GetView<BottomNavController> {
         child: Padding(
           padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 1.2.h),
           child: Container(
-            height: 86,
-            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+            height: 78,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
@@ -154,8 +154,8 @@ class _NavItem extends StatelessWidget {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
-                  width: filled || soft ? 54 : 44,
-                  height: filled || soft ? 54 : 44,
+                  width: filled || soft ? 48 : 38,
+                  height: filled || soft ? 48 : 38,
                   decoration: BoxDecoration(
                     color: soft ? const Color(0xFFEFF4FF) : null,
                     borderRadius: BorderRadius.circular(16),
@@ -173,18 +173,24 @@ class _NavItem extends StatelessWidget {
                   child: Icon(
                     icon,
                     color: filled ? Colors.white : color,
-                    size: selected ? 31 : 28,
+                    size: selected ? 28 : 25,
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 11,
-                    fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+                const SizedBox(height: 3),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 10,
+                        fontWeight:
+                            selected ? FontWeight.w800 : FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
               ],
