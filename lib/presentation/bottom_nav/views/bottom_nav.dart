@@ -17,7 +17,7 @@ class BottomNavScreen extends GetView<BottomNavController> {
       extendBody: true,
       wrapWithAnnotatedRegion: true,
       body: Container(
-        margin: const EdgeInsets.only(bottom: 118),
+        margin: const EdgeInsets.only(bottom: 122),
         child: Navigator(
           key: Get.nestedKey(controller.bottomNavNestedID),
           onGenerateRoute: (settings) {
@@ -46,8 +46,8 @@ class BottomNavScreen extends GetView<BottomNavController> {
         child: Padding(
           padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 1.2.h),
           child: Container(
-            height: 78,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            height: 86,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
@@ -154,8 +154,8 @@ class _NavItem extends StatelessWidget {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
-                  width: filled || soft ? 48 : 38,
-                  height: filled || soft ? 48 : 38,
+                  width: filled || soft ? 54 : 44,
+                  height: filled || soft ? 54 : 44,
                   decoration: BoxDecoration(
                     color: soft ? const Color(0xFFEFF4FF) : null,
                     borderRadius: BorderRadius.circular(16),
@@ -173,10 +173,10 @@ class _NavItem extends StatelessWidget {
                   child: Icon(
                     icon,
                     color: filled ? Colors.white : color,
-                    size: selected ? 28 : 25,
+                    size: selected ? 31 : 28,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 5),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: FittedBox(
@@ -186,7 +186,7 @@ class _NavItem extends StatelessWidget {
                       maxLines: 1,
                       style: TextStyle(
                         color: color,
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight:
                             selected ? FontWeight.w800 : FontWeight.w500,
                       ),

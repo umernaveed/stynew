@@ -390,7 +390,7 @@ class _DashboardPillTabs extends StatelessWidget {
               onTap: () => controller.tabController.animateTo(0),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: _PillTab(
               title: 'Packages',
@@ -400,7 +400,7 @@ class _DashboardPillTabs extends StatelessWidget {
               onTap: () => controller.tabController.animateTo(1),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: _PillTab(
               title: 'Address',
@@ -474,27 +474,31 @@ class _PillTab extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  color: foregroundColor,
-                  size: 24,
-                ),
-                const SizedBox(width: 7),
-                Flexible(
-                  child: Text(
-                    title,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      icon,
                       color: foregroundColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
+                      size: 27,
                     ),
-                  ),
+                    const SizedBox(width: 9),
+                    Text(
+                      title,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: foregroundColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             if (isUnderlineSelected)
               Positioned(
